@@ -66,6 +66,7 @@ public class heap {
     }
 
     public void AddElement(QueueElement new_element, QueueElement[] heap_array, int heap_size) {
+        //public void addElement(QueueElement new_element, QueueElement[] heap_array, int heap_size)
         heap_array[heap_size]=new_element;
         int swapping_index = heap_size;
         int swapped_index = SwapWithParent(swapping_index, heap_array);
