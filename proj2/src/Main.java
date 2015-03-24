@@ -3,7 +3,7 @@
  * Created by bruno on 24/03/15.
  */
 import java.io.*;
-import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public class Main {
     void create_intial_runs(String input_file_name, int run_size, int num_files, String tempdir, PriorityQueue pqueue) throws IOException {
@@ -11,7 +11,7 @@ public class Main {
         int total_runs = 0;
         FileInputStream stream = new FileInputStream(input_file_name);	DataInputStream in = new DataInputStream (stream);
         int output_file = 0;
-        FileWriter fw = new FileWriter((tempdir +' '+output_file+".txt "), true);
+        FileWriter fw = new FileWriter((tempdir +" "+output_file+".txt "), true);
         for(int i=0; i<run_size; i++) {
             if(in.available()!=0){
                 pqueue.minHeapMethods.AddElement((new QueueElement(Integer.parseInt(in.readLine()), output_file)));
@@ -53,7 +53,7 @@ public class Main {
                 runs[output_file]++;
                 total_runs++;
             }
-            System.out.println("Total initial runs: "+total_runs+"distribution: "+ runs.toString());
+            System.out.println("Total initial runs: "+total_runs+"distribution: "+ Arrays.toString(runs));
             in.close();
         }
     }
