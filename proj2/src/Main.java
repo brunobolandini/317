@@ -1,3 +1,4 @@
+
 /**
  * Created by bruno on 24/03/15.
  */
@@ -57,6 +58,9 @@ public class Main {
         }
     }
 
+public class Main {
+
+
     public static void main(String[] args) {
         int runsize=7, numfiles=2;
         String tempdir="standard_directory", outputfilename="output", inputfilename="input";
@@ -79,5 +83,6 @@ public class Main {
 
         System.out.println("runsize: "+runsize+"\nnumfiles: "+numfiles+"\ntempdir: "+tempdir+"\noutputfilename: "
                 +outputfilename+"\ninputfilename: "+inputfilename);
+                           +outputfilename+"\ninputfilename: "+inputfilename);
     }
 }
