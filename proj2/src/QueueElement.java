@@ -2,10 +2,10 @@
  * Created by bruno on 22/03/15.
  */
 public class QueueElement{
-    int element;
+    String element;
     int file_pointer;
 
-    public QueueElement(int ele, int file) {
+    public QueueElement(String ele, int file) {
         element = ele;
         file_pointer = file;
     }
@@ -14,7 +14,7 @@ public class QueueElement{
         return file_pointer;
     }
 
-    public int getElement(){
+    public String getElement(){
         return element;
     }
 

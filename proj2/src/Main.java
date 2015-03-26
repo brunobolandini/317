@@ -2,10 +2,12 @@
 /**
  * Created by bruno on 24/03/15.
  */
+
 import java.io.*;
 import java.util.Arrays;
 
-public class Main {
+
+/*public class Main {
     void create_intial_runs(String input_file_name, int run_size, int num_files, String tempdir, PriorityQueue pqueue) throws IOException {
         int[] runs = new int [num_files];
         int total_runs = 0;
@@ -56,16 +58,17 @@ public class Main {
             System.out.println("Total initial runs: "+total_runs+"distribution: "+ Arrays.toString(runs));
             in.close();
         }
-    }
+    }*/
 
 public class Main {
 
 
     public static void main(String[] args) {
         int runsize=7, numfiles=2;
-        String tempdir="standard_directory", outputfilename="output", inputfilename="input";
-
-        for (int i = 0; i < args.length; i++) {
+        String tempdir="standard_directory", outputfilename="output", inputfilename="BC.txt";
+        //PriorityQueue pqueue = new PriorityQueue(runsize);
+        int outputFile = 0;
+        /*for (int i = 0; i < args.length; i++) {
             //System.out.println(args[i]);
             if(args[i].contains("-r"))
                 runsize = Integer.parseInt(args[i+1]);
@@ -79,10 +82,29 @@ public class Main {
 
         if ((args.length>0)&&(!(args[args.length-2].contains("-")))) {
             inputfilename = args[args.length - 1];
-        }
+        }*/
 
         System.out.println("runsize: "+runsize+"\nnumfiles: "+numfiles+"\ntempdir: "+tempdir+"\noutputfilename: "
                 +outputfilename+"\ninputfilename: "+inputfilename);
-                           +outputfilename+"\ninputfilename: "+inputfilename);
+
+        /*String text = new String();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(inputfilename))){
+            String currentLine = bufferedReader.readLine();
+            int count =0;
+            do {
+                String[] words = currentLine.split(" ");
+                int i=0;
+
+                while (i<words.length && pqueue.getHeapSize()!=runsize){
+                    pqueue.addElement(new QueueElement(words[i],outputFile));
+                    System.out.println("first carai: "+pqueue.getFirst());
+                }
+                System.out.println(pqueue.toString());
+                currentLine = bufferedReader.readLine();
+                count++;
+            }while (currentLine!=null && count!=1);
+            }catch (IOException e){
+            e.printStackTrace();
+        }*/
     }
 }

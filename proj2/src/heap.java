@@ -22,22 +22,26 @@ public class heap {
         int element_right_index = Right(element_index);
         int element_smallest_index = element_index;
         if(element_right_index < heap_size) {
-            if((heap_array[element_left_index].getElement()) < heap_array[element_right_index].getElement()) {
+            if (heap_array[element_left_index].getElement().compareTo(heap_array[element_right_index].getElement())<0){
+            //if((heap_array[element_left_index].getElement()) < heap_array[element_right_index].getElement()) {
                 element_smallest_index = element_left_index;
             }
             else {
                 element_smallest_index = element_right_index;
             }
-            if(heap_array[element_index].getElement() < heap_array[element_smallest_index].getElement()); {
+            if (heap_array[element_index].getElement().compareTo(heap_array[element_smallest_index].getElement())<0){
+            //if(heap_array[element_index].getElement() < heap_array[element_smallest_index].getElement()); {
                 element_smallest_index = element_index;
             }
         }
         else if(element_left_index <heap_size) {
-            if (heap_array[element_index].getElement() > heap_array[element_left_index].getElement()){
+            if (heap_array[element_index].getElement().compareTo(heap_array[element_left_index].getElement())>0){
+            //if (heap_array[element_index].getElement() > heap_array[element_left_index].getElement()){
                 element_smallest_index = element_left_index;
             }
         }
-        if(heap_array[element_index].getElement() > heap_array[element_left_index].getElement()) {
+        if (heap_array[element_index].getElement().compareTo(heap_array[element_left_index].getElement())>0){
+        //if(heap_array[element_index].getElement() > heap_array[element_left_index].getElement()) {
             Swap(element_index, element_smallest_index, heap_array);
         }
         return element_smallest_index;
@@ -56,7 +60,8 @@ public class heap {
         if (index < 1)
             return index;
         int parent_index = Parent(index);
-        if (heap_array[index].getElement() < heap_array[parent_index].getElement()) {
+        if (heap_array[index].getElement().compareTo(heap_array[parent_index].getElement())<0){
+        //if (heap_array[index].getElement() < heap_array[parent_index].getElement()) {
             Swap (index, parent_index, heap_array);
             return parent_index;
         }
