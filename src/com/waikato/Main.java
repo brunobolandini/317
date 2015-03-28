@@ -105,7 +105,7 @@ public class Main {
                     System.out.println("first carai: "+pqueue.getFirst().getElement());
                     i++;
                 }
-                pqueue.reHeap(0);
+
                 if ("an".compareTo("fulton")>0){
                     System.out.println("vish");
                 }else System.out.println("ue");
