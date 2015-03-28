@@ -64,4 +64,33 @@ public class PriorityQueue {
         }
         return str;
     }
+
+    public void printQueue() {
+        for (int i = 0; i < pqueue.length; i++) {
+            if(i==0){
+                //for(int j=0; j<heap_size/2;j++)
+                    System.out.print("         ");
+                System.out.print(pqueue[i].getElement());
+            }
+            if(i==1){
+                for(int j=0;j<2;j++){
+                    //for(int l=0; l<heap_size/3;l++)
+                        System.out.print("    ");
+                    System.out.print(pqueue[i].getElement()+"  ");
+                    i++;
+                }
+                System.out.print("\n");
+            }
+            if(i==3){
+                for(int j=0;j<4;j++){
+                    //for(int l=0; l+1<heap_size/3;l++)
+                        System.out.print("  ");
+                    System.out.print(pqueue[i].getElement());
+                    i++;
+                }
+            }
+            System.out.print("\n");
+            //System.out.println(pqueue[i].getElement());
+        }
+    }
 }

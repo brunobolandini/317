@@ -102,14 +102,15 @@ public class Main {
                     QueueElement element = new QueueElement(words[i].toLowerCase(),outputFile);
                     pqueue.addElement(element);
 
-                    System.out.println("first carai: "+pqueue.getFirst().getElement());
+                    //System.out.println("first carai: "+pqueue.getFirst().getElement());
                     i++;
                 }
-                pqueue.reHeap(0);
+                /*pqueue.reHeap(0);
                 if ("an".compareTo("fulton")>0){
                     System.out.println("vish");
-                }else System.out.println("ue");
+                }else System.out.println("ue");*/
                 System.out.println(pqueue);
+                pqueue.printQueue();
                 currentLine = bufferedReader.readLine();
                 count++;
             }while (currentLine!=null && count!=1);
