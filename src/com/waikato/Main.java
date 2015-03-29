@@ -64,57 +64,37 @@ import java.io.IOException;
 
 public class Main {
 
+    static int runsize = 7, numfiles = 2, outputFile = 0;
+    static String tempdir = "standard_directory", outputfilename = "output", inputfilename = "input.txt";
 
     public static void main(String[] args) {
-        int runsize=7, numfiles=2;
-        String tempdir="standard_directory", outputfilename="output", inputfilename="BC.txt";
-        PriorityQueue pqueue = new PriorityQueue(runsize);
-        int outputFile = 0;
-        /*for (int i = 0; i < args.length; i++) {
+
+
+        for (int i = 0; i < args.length; i++) {
             //System.out.println(args[i]);
-            if(args[i].contains("-r"))
-                runsize = Integer.parseInt(args[i+1]);
-            if(args[i].contains("-k"))
-                numfiles = Integer.parseInt(args[i+1]);
-            if(args[i].contains("-d"))
-                tempdir = args[i+1];
-            if(args[i].contains("-o"))
-                outputfilename = args[i+1];
+            if (args[i].contains("-r"))
+                runsize = Integer.parseInt(args[i + 1]);
+            if (args[i].contains("-k"))
+                numfiles = Integer.parseInt(args[i + 1]);
+            if (args[i].contains("-d"))
+                tempdir = args[i + 1];
+            if (args[i].contains("-o"))
+                outputfilename = args[i + 1];
         }
 
-        if ((args.length>0)&&(!(args[args.length-2].contains("-")))) {
+
+        if (args.length == 1) {
             inputfilename = args[args.length - 1];
-        }*/
-
-        System.out.println("runsize: "+runsize+"\nnumfiles: "+numfiles+"\ntempdir: "+tempdir+"\noutputfilename: "
-                +outputfilename+"\ninputfilename: "+inputfilename);
-
-        String text = new String();
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader("src/com/waikato/"+inputfilename));
-            String currentLine = bufferedReader.readLine();
-            int count =0;
-            do {
-                String[] words = currentLine.split(" ");
-                int i=0;
-
-                while (i<words.length && pqueue.getHeapSize()!=runsize){
-                    QueueElement element = new QueueElement(words[i].toLowerCase(),outputFile);
-                    pqueue.addElement(element);
-
-                    System.out.println("first carai: "+pqueue.getFirst().getElement());
-                    i++;
-                }
-
-                if ("an".compareTo("fulton")>0){
-                    System.out.println("vish");
-                }else System.out.println("ue");
-                System.out.println(pqueue);
-                currentLine = bufferedReader.readLine();
-                count++;
-            }while (currentLine!=null && count!=1);
-            }catch (IOException e){
-            e.printStackTrace();
+        } else {
+            if ((args.length > 0) && (!(args[args.length - 1].contains("-")))) {
+                inputfilename = args[args.length - 1];
+            }
         }
+
+        System.out.println("runsize: " + runsize + "\nnumfiles: " + numfiles + "\ntempdir: " + tempdir + "\noutputfilename: "
+                + outputfilename + "\ninputfilename: " + inputfilename);
+        PriorityQueue pqueue = new PriorityQueue(runsize);
+        Polyphase polyphase = new Polyphase(pqueue,runsize,numfiles,outputFile,tempdir,outputfilename,inputfilename);
+        polyphase.putOnFile();
     }
 }
