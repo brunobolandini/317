@@ -20,5 +20,12 @@ public class QueueElement{
         return element;
     }
 
+
+    @Override
+    public String toString() {
+        return "QueueElement{" +
+                "element='" + element + '\'' +
+                '}';
+    }
 }
 

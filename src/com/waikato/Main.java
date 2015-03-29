@@ -67,7 +67,7 @@ public class Main {
     static int runsize = 7, numfiles = 2, outputFile = 0;
     static String tempdir = "standard_directory", outputfilename = "output", inputfilename = "input.txt";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
 
 
         for (int i = 0; i < args.length; i++) {

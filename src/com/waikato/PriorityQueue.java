@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public class PriorityQueue {
     QueueElement[] pqueue;
-    private int heap_size;
+    int heap_size;
     heap minHeapMethods;
 
     public PriorityQueue(int size_of_array) {
@@ -24,6 +24,7 @@ public class PriorityQueue {
         QueueElement first = pqueue[0];
         pqueue[0] = pqueue[heap_size - 1];
         heap_size--;
+        //System.out.println("heapsize-- "+getHeapSize());
         minHeapMethods.DownHeap(pqueue, heap_size);
         return first;
     }
