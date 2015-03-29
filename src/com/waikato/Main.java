@@ -95,6 +95,7 @@ public class Main {
                 + outputfilename + "\ninputfilename: " + inputfilename);
         PriorityQueue pqueue = new PriorityQueue(runsize);
         Polyphase polyphase = new Polyphase(pqueue,runsize,numfiles,outputFile,tempdir,outputfilename,inputfilename);
-        polyphase.putOnFile();
+        polyphase.createRun();
+
     }
 }

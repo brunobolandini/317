@@ -4,6 +4,7 @@ import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +14,7 @@ import java.util.Arrays;
  */
 public class Polyphase {
     private PriorityQueue pqueue = null;
-    private int runsize, numfiles, outputFile;
+    private int runsize, numfiles, outputFile,fileCounter = 1,offSet=0;
     private String tempdir, outputfilename, inputfilename;
     private BufferedReader bufferedReader = null;
     private ArrayList<String> currentLine = new ArrayList<String>();
@@ -41,29 +42,62 @@ public class Polyphase {
         }
     }
 
-    public void putOnFile() throws IOException{
-
-        String text = new String();
-        int offSet = fillQueue();
-        System.out.println("get heap size "+pqueue.getHeapSize()+" pqueue "+pqueue);
-        pqueue.removeFirst();
-        System.out.println("tamanho da current line "+currentLine.size());
-        String[] line = currentLine.toArray(new String[currentLine.size()]);
-
-        wordToQueue(line,offSet);
-
-        pqueue.reHeap(0);
-        System.out.println(pqueue);
-        /*String[] input = {"the","Fulton","evidence","that","any","irregularities","took"};
-        int i=0;
-        while (pqueue.getHeapSize()<runsize ){
-            QueueElement element = new QueueElement(input[i].toLowerCase(),outputFile);
-            pqueue.addElement(element);
-            i++;
+    public void createRun() throws IOException{
+        FileWriter fw = new FileWriter("temp"+fileCounter);
+        offSet = fillQueue();
+        QueueElement element = new QueueElement("",fileCounter);
+        while(pqueue.getHeapSize()>0){
+            System.out.println(pqueue.getHeapSize()+"");
+            System.out.println(pqueue);
+            element = putOnFile(fw,element);
+            //fw.write("");
         }
+        //pqueue.reHeap(0);
         System.out.println(pqueue);
-        pqueue.removeFirst();*/
+        fw.close();
+    }
+    public QueueElement putOnFile(FileWriter fileWriter,QueueElement element) throws IOException {
 
+
+        System.out.println("OffSet: "+offSet);
+
+        if (pqueue.getFirst().getElement().compareTo(element.getElement())>=0){
+            fileWriter.write(pqueue.getFirst().getElement());
+            element = pqueue.getFirst();
+            pqueue.removeFirst();
+            System.out.println("REMOVED ELEMENT"+ pqueue);
+            String[] line = currentLine.toArray(new String[currentLine.size()]);
+            wordToQueue(line);
+            //pqueue.reHeap(0);
+
+        }else {
+
+            System.out.println("element frozen1: "+pqueue.getFirst().getElement());
+            pqueue.addToQueueForNextRun(element);
+            //pqueue.reHeap(pqueue.getHeapSize());
+        }
+        return element;
+    }
+
+    public QueueElement putOnFile(FileWriter fileWriter) throws IOException {
+
+        int offSet = fillQueue();
+        //System.out.println("get heap size " + pqueue.getHeapSize() + " pqueue " + pqueue);
+
+
+        pqueue.removeFirst();
+
+        //System.out.println("tamanho da current line " + currentLine.size());
+
+        String[] line = currentLine.toArray(new String[currentLine.size()]);
+        wordToQueue(line);
+        //System.out.println(pqueue + " " + pqueue.getHeapSize());
+        pqueue.addToQueueForNextRun(pqueue.getFirst());
+        System.out.println(pqueue +" "+pqueue.getHeapSize());
+
+
+        QueueElement element = new QueueElement("oi, eu sou o goku",1);
+        return element;
     }
 
     private int fillQueue() {
@@ -74,14 +108,13 @@ public class Polyphase {
             offSet = 0;
             String[] line = readInput();
             currentLine.addAll(Arrays.asList(line));
-            offSet = lineToQueue(line,offSet);
+            offSet = lineToQueue(line);
         }
-        System.out.println(pqueue.getHeapSize()+"----"+runsize);
         //System.out.println(pqueue);
         return offSet;
     }
 
-    public int lineToQueue(String[] line,int offSet){
+    public int lineToQueue(String[] line){
         System.out.println(line.length);
         while (pqueue.getHeapSize()<runsize && offSet<line.length){
             QueueElement element = new QueueElement(line[offSet].toLowerCase(),outputFile);
@@ -92,14 +125,16 @@ public class Polyphase {
         return offSet;
     }
 
-    public int wordToQueue(String[] line, int offSet) throws IOException{
+    public int wordToQueue(String[] line) throws IOException{
 
-        if (pqueue.getHeapSize()==runsize)
+        if (pqueue.getHeapSize()==runsize) {
             return -1;
+        }
         if (offSet< line.length){
+            System.out.println("Add word ***"+line[offSet]+"*** to queue.");
             QueueElement element = new QueueElement(line[offSet].toLowerCase(),outputFile);
             pqueue.addElement(element);
-            return offSet;
+            return offSet++;
         }else {
             System.out.println("put next line");
            return fillQueue();
