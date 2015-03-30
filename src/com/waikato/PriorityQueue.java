@@ -34,6 +34,8 @@ public class PriorityQueue {
     }
 
     public void addToQueueForNextRun(QueueElement element) {
+        System.out.println(pqueue[0]);
+        System.out.println(heap_size);
         pqueue[0] = pqueue[heap_size - 1];
         heap_size--;
         minHeapMethods.DownHeap(pqueue, heap_size);
