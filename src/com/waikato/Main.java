@@ -64,7 +64,7 @@ import java.io.IOException;
 
 public class Main {
 
-    static int runsize = 7, numfiles = 2;
+    static int runsize = 7, numfiles = 4;
     static String tempdir = "standard_directory", outputfilename = "output", inputfilename = "input.txt";
 
     public static void main(String[] args) throws IOException{
