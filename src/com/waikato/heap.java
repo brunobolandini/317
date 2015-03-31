@@ -37,14 +37,14 @@ public class heap {
             }
         }
         else if(element_left_index <heap_size) {
-            if (heap_array[element_index].getElement().compareTo(heap_array[element_left_index].getElement())>0){
-            //if (heap_array[element_index].getElement() > heap_array[element_left_index].getElement()){
+            if (heap_array[element_index].getElement().compareTo(heap_array[element_left_index].getElement()) > 0) {
+                //if (heap_array[element_index].getElement() > heap_array[element_left_index].getElement()){
                 element_smallest_index = element_left_index;
             }
-            if (heap_array[element_index].getElement().compareTo(heap_array[element_left_index].getElement())>0){
-                //if(heap_array[element_index].getElement() > heap_array[element_left_index].getElement()) {
-                Swap(element_index, element_smallest_index, heap_array);
-            }
+        }
+        if (heap_array[element_index].getElement().compareTo(heap_array[element_smallest_index].getElement())>0){
+            //if(heap_array[element_index].getElement() > heap_array[element_left_index].getElement()) {
+            Swap(element_index, element_smallest_index, heap_array);
         }
 
         return element_smallest_index;
@@ -53,7 +53,8 @@ public class heap {
     public void DownHeap (QueueElement[] heap_array, int heap_size) {
         int swapping_index = 0;
         int swapped_index = SwapWithChild(0, heap_array, heap_size);
-        while (swapped_index != swapping_index && swapping_index<heap_size && swapped_index<heap_size) {
+
+        while (swapped_index != swapping_index) {
             swapping_index = swapped_index;
             swapped_index = SwapWithChild(swapped_index, heap_array, heap_size);
         }
@@ -74,7 +75,6 @@ public class heap {
     }
 
     public void AddElement(QueueElement new_element, QueueElement[] heap_array, int heap_size) {
-        //public void addElement(QueueElement new_element, QueueElement[] heap_array, int heap_size)
         heap_array[heap_size]=new_element;
         int swapping_index = heap_size;
         int swapped_index = SwapWithParent(swapping_index, heap_array);
