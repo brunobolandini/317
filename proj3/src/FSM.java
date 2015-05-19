@@ -141,7 +141,7 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
             return true;
         return false;
     }
-    public void Search(String filename){
+    /* public void Search(String filename){
         try {
             BufferedReader br = new BufferedReader(new FileReader(filename));
             String line;
@@ -192,6 +192,52 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }*/
+    void search(String filename) throws Exception{
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String line;
+        while ((line=br.readLine())!=null){
+            Deque myDeque = new Deque();
+            this.regexp = line.toCharArray();
+            int currentChar = 0;
+            int currentState = 0;
+            boolean match = false;
+            this.state = 0;
+            do {
+                if(regexp[state]==ch[state]){ // if the current char matches the current state char
+                    if (next1[currentState]!= next2[currentState]){
+                        myDeque.insertLast(next1[currentState]);
+                    }
+                    myDeque.insertLast(next2[currentState]); //insert next states at the back of the deque
+                } else if (ch[currentState]==' ') { //if the state doesn't consume any char
+                    if (next1[currentState]==-1) //scan found, no states in the deque
+                        match = true;
+                    else {
+                        if (next1[currentState]!=next2[currentState])
+                            myDeque.insertFirst(next1[currentState]);
+                        myDeque.insertFirst(next2[currentState]);
+                    }
+                } else {
+                    if(myDeque.getSize()==1) break; //only scan
+                }
+                currentState=myDeque.removeFirst(); //if we are on the final state we have matched the regexp but we haven't finish reading the line
+                if (currentState==ch.length-1){
+                    match = true;
+                    currentState = myDeque.removeFirst();
+                }
+                if (currentState==-1){//if its the scan
+                    myDeque.insertFirst(currentState); //put the scan back in the deque
+                    currentState = myDeque.removeFirst(); //read the next char of the l
+                    currentChar++;
+                    if (currentChar==this.regexp.length){//if we have read all char
+                        if (currentState==ch.length-1||match){
+                            System.out.println("Matched on "+line);
+                            break;
+                        }else currentChar--;
+                    }
+                }
+            } while (myDeque.getSize()>0);
         }
     }
 }
