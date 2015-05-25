@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -15,13 +16,15 @@ public class FSM {
     int fsm_size = 1;
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         if (args.length<1){
             System.out.println("Usage: FMS \"regexp\"");
             System.exit(0);
         }
         FSM fsm = new FSM(args[0]);
+        fsm.search(args[1]);
     }
+
     public FSM(String regexp_string) {
         char[] temp = regexp_string.toCharArray(); //from here until —>
         regexp = new char[temp.length + 2]; //start state and end state, 2 states
@@ -45,7 +48,7 @@ public class FSM {
         } else {
             set_state(fsm_size, ' ', -1, -1); //final state
 
-            System.out.println("FSM for" + regexp_string);
+            System.out.println("FSM for " + regexp_string);
             for (int x = 0; x < fsm_size; x++) {
                 System.out.println(x + ":" + ch[x] + ", " + next1[x] + ", " + next2[x]);
             }
@@ -220,25 +223,6 @@ public class FSM {
                             state++;
                         }
                     }
-                    /*
-                    do {
-                        switch (regexp[current_index]) {
-                            case ']':
-                                counter++;
-                                if (counter>1){
-                                    break;
-                                }else {
-                                    setNextState(state - 1, state);
-                                    r = state;
-                                    state++;
-                                    set_state(r, ' ', state, state + 1);
-                                    set_state(state,regexp[current_index],);
-                                    break;
-                                }
-                            default:
-                                break;
-                        }
-                    }while (regexp[current_index]!=']');*/
             }
         }
         return r;
@@ -249,107 +233,76 @@ public class FSM {
             return true;
         return false;
     }
-    /* public void Search(String filename){
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(filename));
-            String line;
-            while ((line=br.readLine())!=null){
-                Deque<Integer> deque = new ArrayDeque<Integer>();
-                deque.push(-1);//Scan
-                char[] charLine=line.toCharArray();
-                int currentChar = 0;
-                int currentState = 0;
-                boolean matched = false;
-                do {
-                    if (ch[currentState]==charLine[currentChar]){
-                        if (next1[currentState]!= next2[currentState]){
-                            deque.add(next1[currentState]);
-                        }
-                        deque.add(next2[currentState]);
-                    }else if (ch[currentState]==' '){
-                        if (next1[currentState]==-1)
-                            matched = true;
-                        else {
-                            if (next1[currentState]!=next2[currentState])
-                                deque.push(next1[currentState]);
-                            deque.push(next2[currentState]);
-                        }
-                    }else {
-                        if (deque.size()==1)//only scan
-                        break;
-                    }
-                    currentState=deque.removeFirst();
-                    if (currentState==ch.length-1){
-                        matched = true;
-                        currentState = deque.removeFirst();
-                    }
-                    if (currentState==-1){//if its the scan
-                        deque.add(currentState);
-                        currentState = deque.removeFirst();
-                        currentChar++;
-                        if (currentChar==charLine.length){//if we have read all char
-                            if (currentState==ch.length-1||matched){
-                                System.out.println("Matched on "+line);
-                                break;
-                            }else currentChar--;
-                        }
-                    }
-                }while (deque.size()>0);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
+
     void search(String filename) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String line;
         while ((line = br.readLine()) != null) {
             Deque myDeque = new Deque();
-            this.regexp = line.toCharArray();
+            char[] temp = line.toCharArray(); //from here until —>
+            this.regexp = new char[temp.length + 2]; //start state and end state, 2 states
+            this.regexp[temp.length + 1] = 0; //end state
+            this.regexp[0] = 0; //start state   //until here creating the array e.g “ab*”,  0,a,b,*0
+            System.arraycopy(temp, 0, this.regexp, 1, temp.length);
+
+            /*System.out.print("Line: " + line);
+            System.out.print(" ");
+            System.out.print("Ch:");
+            System.out.print(ch);
+            System.out.print("RegExp:");
+            System.out.print(regexp);
+            System.out.print(" ");
+            System.out.println("\n"); */
+
             int currentChar = 0;
             int currentState = 0;
             boolean match = false;
             this.state = 0;
             do {
-                do {
-                    if ((regexp[state] == ch[state]) || (regexp[state] == '.')) { // if the current char matches the current state char or is a wildcard character
-                        if (next1[currentState] != next2[currentState]) {
-                            myDeque.insertLast(next1[currentState]);
-                        }
-                        myDeque.insertLast(next2[currentState]); //insert next states at the back of the deque
-                    } else if (ch[currentState] == ' ') { //if the state doesn't consume any char
-                        if (next1[currentState] == -1) //scan found, no states in the deque
-                            match = true;
-                        else {
-                            if (next1[currentState] != next2[currentState])
-                                myDeque.insertFirst(next1[currentState]);
-                            myDeque.insertFirst(next2[currentState]);
-                        }
-                    } else {
-                        if (myDeque.getSize() == 1) break; //only scan
+                //System.out.println("if"+regexp[state]+"=="+ch[state]);
+                //System.out.print("State: "+state);
+                //System.out.print(" Current State " + currentState + " ");
+                if ((regexp[state] == ch[state]) || (regexp[state] == '.')) { // if the current char matches the current state char or is a wildcard character
+                    //System.out.println("E1");
+                    if (next1[currentState] != next2[currentState]) {
+                        myDeque.insertLast(next1[currentState]);
                     }
-                    currentState = myDeque.removeFirst(); //if we are on the final state we have matched the regexp but we haven't finish reading the line
-                    if (currentState == ch.length - 1) {
+                    myDeque.insertLast(next2[currentState]); //insert next states at the back of the deque
+                    state++;
+                } else if (ch[currentState] == ' ') { //if the state doesn't consume any char
+                    //System.out.println("E2");
+                    if (next1[currentState] == -1) //scan found, no states in the deque
                         match = true;
-                        currentState = myDeque.removeFirst();
+                    else {
+                        if (next1[currentState] != next2[currentState])
+                            myDeque.insertFirst(next1[currentState]);
+                        myDeque.insertFirst(next2[currentState]);
                     }
-                    if (currentState == -1) {//if its the scan
-                        myDeque.insertFirst(currentState); //put the scan back in the deque
-                        currentState = myDeque.removeFirst(); //read the next char of the l
-                        currentChar++;
-                        if (currentChar == this.regexp.length) {//if we have read all char
-                            if (currentState == ch.length - 1 || match) {
-                                System.out.println("Matched on " + line);
-                                break;
-                            } else currentChar--;
-                        }
+                    state++;
+                } else {
+                    if (myDeque.getSize() == 1) break; //only scan
+                }
+                currentState = myDeque.removeFirst(); //if we are on the final state we have matched the regexp but we haven't finish reading the line
+                //System.out.println("Current State: "+currentState+" == "+(ch.length-1));
+                if (currentState == ch.length - 1) {
+                    match = true;
+                    currentState = myDeque.removeFirst();
+                }
+                //System.out.println("Why current state "+currentState);
+                if (currentState == -1) {//if its the scan
+                    myDeque.insertLast(currentState); //put the scan back in the deque
+                    currentState = myDeque.removeFirst(); //read the next char of the l
+                    currentChar++;
+                    //System.out.println("Current Char "+currentChar+" == "+(this.regexp.length-1));
+                    if (currentChar == this.regexp.length-1) {//if we have read all char
+                        if (currentState == ch.length - 1 || match) {
+                            System.out.println("Matched on " + line);
+                            break;
+                        } else currentChar--;
                     }
-                } while (myDeque.getSize() > 0);
-            }
+                }
+                //System.out.println("Again current state "+currentState);
+            } while (myDeque.getSize() > 0);
         }
     }
 }
-
-
