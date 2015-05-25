@@ -31,9 +31,9 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
         regexp[temp.length + 1] = 0; //end state
         regexp[0] = 0; //start state   //until here creating the array e.g “ab*”,  0,a,b,*0
         System.arraycopy(temp, 0, regexp, 1, temp.length);
-        ch = new char[regexp.length];
-        next1 = new int[regexp.length];
-        next2 = new int[regexp.length];
+        ch = new char[regexp.length*2];
+        next1 = new int[regexp.length*2];
+        next2 = new int[regexp.length*2];
         set_state(0, ' ', 1, 1); //start state
         System.out.println(regexp);
         expression(); //start the building of the fsm
@@ -176,7 +176,6 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
             r = state;
             state++;
         } else {
-            System.out.println("dsdasd");
             switch (regexp[current_index]){
                 case '.':
 
@@ -199,6 +198,51 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
                     }
                     break;
                 case '[':
+                    int counter = 0;
+                    int index = current_index+1;
+                    String brackets = "";
+                    r=state;
+                    while (counter<2||regexp[index]!=']') {
+                        if (regexp[index]==']'){
+                            counter++;
+                        }
+                        if (counter<2) {
+                            brackets += regexp[index];
+                            index++;
+                        }
+                    }
+                    current_index=index+1;
+
+                    for (int i=0;i<brackets.length();i++) {
+                        if (i==brackets.length()-1){
+                            set_state(state,brackets.charAt(i),((brackets.length()*2)-1)+r,((brackets.length()*2)-1)+r);
+                            state++;
+                        }else {
+                            set_state(state, ' ', state + 1, state + 2);
+                            state++;
+                            set_state(state,brackets.charAt(i),((brackets.length()*2)-1)+r,((brackets.length()*2)-1)+r);
+                            state++;
+                        }
+                    }
+                    /*
+                    do {
+                        switch (regexp[current_index]) {
+                            case ']':
+                                counter++;
+                                if (counter>1){
+                                    break;
+                                }else {
+                                    setNextState(state - 1, state);
+                                    r = state;
+                                    state++;
+                                    set_state(r, ' ', state, state + 1);
+                                    set_state(state,regexp[current_index],);
+                                    break;
+                                }
+                            default:
+                                break;
+                        }
+                    }while (regexp[current_index]!=']');*/
             }
         }
         return r;
@@ -262,10 +306,10 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
             e.printStackTrace();
         }
     }*/
-    void search(String filename) throws Exception{
+    /*void search(String filename) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String line;
-        while ((line=br.readLine())!=null){
+        while ((line = br.readLine()) != null) {
             Deque myDeque = new Deque();
             this.regexp = line.toCharArray();
             int currentChar = 0;
@@ -274,41 +318,42 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
             this.state = 0;
             do {
                 do {
-                if((regexp[state]==ch[state])||(regexp[state]=='.')){ // if the current char matches the current state char or is a wildcard character
-                    if (next1[currentState]!= next2[currentState]){
-                        myDeque.insertLast(next1[currentState]);
+                    if ((regexp[state] == ch[state]) || (regexp[state] == '.')) { // if the current char matches the current state char or is a wildcard character
+                        if (next1[currentState] != next2[currentState]) {
+                            myDeque.insertLast(next1[currentState]);
+                        }
+                        myDeque.insertLast(next2[currentState]); //insert next states at the back of the deque
+                    } else if (ch[currentState] == ' ') { //if the state doesn't consume any char
+                        if (next1[currentState] == -1) //scan found, no states in the deque
+                            match = true;
+                        else {
+                            if (next1[currentState] != next2[currentState])
+                                myDeque.insertFirst(next1[currentState]);
+                            myDeque.insertFirst(next2[currentState]);
+                        }
+                    } else {
+                        if (myDeque.getSize() == 1) break; //only scan
                     }
-                    myDeque.insertLast(next2[currentState]); //insert next states at the back of the deque
-                } else if (ch[currentState]==' ') { //if the state doesn't consume any char
-                    if (next1[currentState]==-1) //scan found, no states in the deque
+                    currentState = myDeque.removeFirst(); //if we are on the final state we have matched the regexp but we haven't finish reading the line
+                    if (currentState == ch.length - 1) {
                         match = true;
-                    else {
-                        if (next1[currentState]!=next2[currentState])
-                            myDeque.insertFirst(next1[currentState]);
-                        myDeque.insertFirst(next2[currentState]);
+                        currentState = myDeque.removeFirst();
                     }
-                } else {
-                    if(myDeque.getSize()==1) break; //only scan
-                }
-                currentState=myDeque.removeFirst(); //if we are on the final state we have matched the regexp but we haven't finish reading the line
-                if (currentState==ch.length-1){
-                    match = true;
-                    currentState = myDeque.removeFirst();
-                }
-                if (currentState==-1){//if its the scan
-                    myDeque.insertFirst(currentState); //put the scan back in the deque
-                    currentState = myDeque.removeFirst(); //read the next char of the l
-                    currentChar++;
-                    if (currentChar==this.regexp.length){//if we have read all char
-                        if (currentState==ch.length-1||match){
-                            System.out.println("Matched on "+line);
-                            break;
-                        }else currentChar--;
+                    if (currentState == -1) {//if its the scan
+                        myDeque.insertFirst(currentState); //put the scan back in the deque
+                        currentState = myDeque.removeFirst(); //read the next char of the l
+                        currentChar++;
+                        if (currentChar == this.regexp.length) {//if we have read all char
+                            if (currentState == ch.length - 1 || match) {
+                                System.out.println("Matched on " + line);
+                                break;
+                            } else currentChar--;
+                        }
                     }
-                }
-            } while (myDeque.getSize()>0);
+                } while (myDeque.getSize() > 0);
+            }
         }
-    }
+    }*/
 }
 
 
