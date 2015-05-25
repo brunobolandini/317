@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.Deque;
+
 
 /**
  * Created by bruno on 18/05/15.
@@ -17,6 +17,14 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
     int current_index = 1;
     int fsm_size = 1;
 
+
+    public static void main(String[] args) {
+        if (args.length<1){
+            System.out.println("Usage: FMS \"regexp\"");
+            System.exit(0);
+        }
+        FSM fsm = new FSM(args[0]);
+    }
     public FSM(String regexp_string) {
         char[] temp = regexp_string.toCharArray(); //from here until —>
         regexp = new char[temp.length + 2]; //start state and end state, 2 states
@@ -27,10 +35,15 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
         next1 = new int[regexp.length];
         next2 = new int[regexp.length];
         set_state(0, ' ', 1, 1); //start state
+        System.out.println(regexp);
         expression(); //start the building of the fsm
-        //once we have built the fem
+        //once we have built the fsm
+        if (current_index>=regexp.length){
+            current_index--;
+            fsm_size=fsm_size-2;
+        }
         if (regexp[current_index] != 0) {
-            error();
+            error("error on: "+regexp[current_index-1]+regexp[current_index]+"\nRegular Expression is not valid");
 
         } else {
             set_state(fsm_size, ' ', -1, -1); //final state
@@ -44,19 +57,23 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
     }
 
     private void error() {
+        System.out.println("error");
+        System.exit(1); //we might change it
+    }
+    private void error(String msg) {
+        System.out.println(msg);
         System.exit(1); //we might change it
     }
 
-    private void set_state(int s, char c, int n1, int n2) {
-        ch[s] = c;
-        next1[s] = n1;
-        next2[s] = n2;
-        fsm_size++;
-    }
+
 
     private int expression() {
         int r = term();
-        if (isvocab(regexp[current_index]) || regexp[current_index] == '(') expression();
+        if (current_index>=regexp.length){
+            return r;
+        }
+        if (isvocab(regexp[current_index]) || regexp[current_index] == '(' || regexp[current_index]=='['|| regexp[current_index]=='.')
+            expression();
         return r;
     }
 
@@ -64,39 +81,68 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
         int r, term1, term2, previous_index;
         previous_index = state - 1;
         r = term1 = factor();
-        if (regexp[current_index] == '*') { //we want  ab*c
-            setPreviousStateTo(state, term1); //e.g ab* a will point to *
-            set_state(state, ' ', state + 1, term1); // * points to previous and next
-            current_index++;
-            r = state;
-            state++;
-        }
-        if (regexp[current_index] == '|') { // ab | cd
-            setNextState(previous_index, state); // ‘a’will point to ‘|’
-            previous_index = state - 1;
-            current_index++;
-            r = state;
-            state++;
-            term2 = term(); //find the next term to point to
-            set_state(r, ' ', term1, term2);
-            setNextState(previous_index, state);
-        }
-        if (regexp[current_index] == '?') {
-            //TO DO
-        }
-        if (regexp[current_index] == '[') {
-            //TO DO
-        }
-        if (regexp[current_index] == ']') {
-            //TO DO
-        }
-        if (regexp[current_index] == '.') {
-            //TO DO
-        }
-        if (regexp[current_index] == '\\') {
-            // TO DO
-        }
 
+        if (current_index>=regexp.length){
+
+            return r;
+        }
+        switch (regexp[current_index]){
+            case '*':
+                if (!isvocab(ch[state-1])){
+                    error("error on: "+regexp[current_index-1]+regexp[current_index]+"\nRegular Expression is not valid");
+                }
+                setPreviousStateTo(state, term1); //e.g ab* a will point to *
+                set_state(state, ' ', state + 1, term1); // * points to previous and next
+
+                current_index++;
+                r = state;
+                state++;
+                break;
+            case '|':
+                setNextState(previous_index, state); // ‘a’will point to ‘|’
+                previous_index = state - 1;
+                current_index++;
+                r = state;
+                state++;
+                term2 = term(); //find the next term to point to
+                set_state(r, ' ', term1, term2);
+                setNextState(previous_index, state);
+                break;
+            case '?':
+                if (!isvocab(ch[state-1])){
+                    error("error on: "+regexp[current_index-1]+regexp[current_index]+"\nRegular Expression is not valid");
+                }
+                System.out.println(previous_index+" "+current_index+" "+state+" "+term1);
+                setPreviousStateTo(state, term1);
+
+                current_index++;
+                r = state;
+                state++;
+
+                term2 = term();
+
+                set_state(r,' ',term1,term2);
+                setNextState(term1,term1+1);
+                if (r!=state-3)
+                    setNextState(state - 3, state - 1);
+                System.out.println(previous_index+" "+current_index+" "+state+" "+term1+" "+term2);
+            case '[':
+                break;
+            case ']':
+                break;
+            case '\\':
+                try {
+                    current_index++;
+                    set_state(state,regexp[current_index],state+1,state+1);
+                    r =state;
+                    state++;
+                    current_index++;
+                }catch (Exception e){
+                    error("Error: Regular expression is not valid");
+
+                }
+                break;
+        }
         return (r);
     }
 
@@ -115,23 +161,45 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
             next1[index] = state;
         }
     }
+    private void set_state(int s, char c, int n1, int n2) {
+        ch[s] = c;
+        next1[s] = n1;
+        next2[s] = n2;
+        fsm_size++;
+    }
 
     private int factor() {
-        int r = -1; //intialize
+        int r = -1;
         if (isvocab(regexp[current_index])) {
             set_state(state, regexp[current_index], state + 1, state + 1);
             current_index++;
             r = state;
             state++;
         } else {
-            if (regexp[current_index] == '(') {
-                current_index++;
-                r = expression();
-                if (regexp[current_index] == ')')
+            System.out.println("dsdasd");
+            switch (regexp[current_index]){
+                case '.':
+
+                    set_state(state,'\uFFFF',state+1,state+1);
                     current_index++;
-                else
-                    error();
-            } else error();
+                    r = state;
+                    state++;
+                    break;
+                case '(':
+                    current_index++;
+
+                    r = expression();
+                    if (current_index>=regexp.length){
+                        error("error :\nCheck your parenthesis");
+                    }
+                    if (regexp[current_index] == ')')
+                        current_index++;
+                    else {
+                        error("error on: " + regexp[current_index - 1] + regexp[current_index] + "\nThe parenthesis was never closed");
+                    }
+                    break;
+                case '[':
+            }
         }
         return r;
     }

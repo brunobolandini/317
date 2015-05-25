@@ -37,7 +37,11 @@ public class Polyphase {
     }
 
     public void createRun() throws IOException {
-        FileWriter fileWriter = new FileWriter("temp" + outputFile);
+        for (int i=1;i<numfiles+1;i++){
+            File file = new File("temp"+i+".txt");
+            file.delete();
+        }
+        FileWriter fileWriter = new FileWriter("temp" + outputFile+".txt");
         fillQueue();
         QueueElement element = new QueueElement("", outputFile);
         //System.out.println(pqueue+"\n");
@@ -53,7 +57,7 @@ public class Polyphase {
             }else {
                 pqueue.addToRootHeap(new QueueElement(elementNew, outputFile));
             }if (pqueue.getHeapSize()==0){
-                fileWriter.write("#DUMMY----\n");
+                //fileWriter.write("#DUMMY----\n");
                 fileWriter.close();
                 totalRuns++;
                 runs[outputFile]++;
@@ -62,7 +66,7 @@ public class Polyphase {
                 }else {
                     outputFile++;
                 }
-                fileWriter = new FileWriter("temp"+outputFile,true);
+                fileWriter = new FileWriter("temp"+outputFile+".txt",true);
                 pqueue.reHeap(0);
             }
         }
@@ -79,7 +83,7 @@ public class Polyphase {
             }else {
                 outputFile++;
             }
-            fileWriter = new FileWriter("temp"+outputFile);
+            fileWriter = new FileWriter("temp"+outputFile+".txt");
             pqueue.reHeap(lastHeapSize);
             while (pqueue.getHeapSize()>0){
                 fileWriter.write(pqueue.removeFirst().getElement()+"\n");
@@ -88,13 +92,11 @@ public class Polyphase {
             runs[outputFile]++;
             totalRuns++;
         }
-        System.out.println(pqueue);
-        System.out.println(pqueue.getHeapSize());
+
         pqueue.reHeap(0);
-        System.out.println(pqueue);
-        System.out.println(pqueue.getHeapSize());
         fileWriter.close();
-        fileWriter = new FileWriter("temp"+numfiles,true);
+        fileWriter = new FileWriter("temp"+numfiles+".txt",true);
+        fileWriter.write("");
         fileWriter.close();
         merge();
     }
@@ -103,10 +105,10 @@ public class Polyphase {
         ArrayList<File> files = new ArrayList<File>();
 
         for (int i=1;i<numfiles+1;i++){
-            File file = new File("temp"+i);
+            File file = new File("temp"+i+".txt");
             files.add(file);
         }
-        Merge m = new Merge(files,outputfilename );
+        Merge m = new Merge(files,tempdir,outputfilename );
         //System.out.println(files.get(3).length());
         try {
             m.mergeFiles();
@@ -122,11 +124,6 @@ public class Polyphase {
             QueueElement element = new QueueElement(line.toLowerCase(), outputFile);
             pqueue.addElement(element);
         }
-    }
-
-    public void lineToQueue(String line) {
-        //System.out.println(line);
 
     }
-
 }

@@ -64,7 +64,7 @@ import java.io.IOException;
 
 public class Main {
 
-    static int runsize = 7, numfiles = 4;
+    static int runsize = 7, numfiles = 7;
     static String tempdir = "standard_directory", outputfilename = "output", inputfilename = "input.txt";
 
     public static void main(String[] args) throws IOException{
@@ -93,7 +93,7 @@ public class Main {
 
         System.out.println("runsize: " + runsize + "\nnumfiles: " + numfiles + "\ntempdir: " + tempdir + "\noutputfilename: "
                 + outputfilename + "\ninputfilename: " + inputfilename);
-        //TextProcessing.CreateInput(inputfilename);
+        TextProcessing.CreateInput(inputfilename);
         PriorityQueue pqueue = new PriorityQueue(runsize);
         Polyphase polyphase = new Polyphase(pqueue,runsize,numfiles,tempdir,outputfilename,inputfilename);
         polyphase.createRun();
