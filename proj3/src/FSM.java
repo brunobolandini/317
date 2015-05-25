@@ -273,7 +273,8 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
             boolean match = false;
             this.state = 0;
             do {
-                if(regexp[state]==ch[state]){ // if the current char matches the current state char
+                do {
+                if((regexp[state]==ch[state])||(regexp[state]=='.')){ // if the current char matches the current state char or is a wildcard character
                     if (next1[currentState]!= next2[currentState]){
                         myDeque.insertLast(next1[currentState]);
                     }
