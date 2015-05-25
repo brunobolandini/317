@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 
 
-/**
- * Created by bruno on 18/05/15.
- */
-public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
+public class FSM {
     char[] regexp; //holds the reg exp
     char[] ch; //represents the tree arrays of the fsm
     int[] next1;
@@ -47,7 +44,7 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
 
         } else {
             set_state(fsm_size, ' ', -1, -1); //final state
-            //just for debugging
+
             System.out.println("FSM for" + regexp_string);
             for (int x = 0; x < fsm_size; x++) {
                 System.out.println(x + ":" + ch[x] + ", " + next1[x] + ", " + next2[x]);
@@ -58,11 +55,11 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
 
     private void error() {
         System.out.println("error");
-        System.exit(1); //we might change it
+        System.exit(1);
     }
     private void error(String msg) {
         System.out.println(msg);
-        System.exit(1); //we might change it
+        System.exit(1);
     }
 
 
@@ -91,20 +88,20 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
                 if (!isvocab(ch[state-1])){
                     error("error on: "+regexp[current_index-1]+regexp[current_index]+"\nRegular Expression is not valid");
                 }
-                setPreviousStateTo(state, term1); //e.g ab* a will point to *
-                set_state(state, ' ', state + 1, term1); // * points to previous and next
+                setPreviousStateTo(state, term1);
+                set_state(state, ' ', state + 1, term1);
 
                 current_index++;
                 r = state;
                 state++;
                 break;
             case '|':
-                setNextState(previous_index, state); // ‘a’will point to ‘|’
+                setNextState(previous_index, state);
                 previous_index = state - 1;
                 current_index++;
                 r = state;
                 state++;
-                term2 = term(); //find the next term to point to
+                term2 = term();
                 set_state(r, ' ', term1, term2);
                 setNextState(previous_index, state);
                 break;
@@ -146,7 +143,6 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
         return (r);
     }
 
-    //points all state which point to ‘from’ to state
     private void setPreviousStateTo(int state, int from) {
         for (int i = 0; i < state; i++) {
             if (next1[i] == from) next1[i] = state;
@@ -156,7 +152,7 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
 
     private void setNextState(int index, int state) {
         if (index != -1) {
-            if (next1[index] == next2[index]) //So we dont overwrite closures
+            if (next1[index] == next2[index])
                 next2[index] = state;
             next1[index] = state;
         }
@@ -306,7 +302,7 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
             e.printStackTrace();
         }
     }*/
-    /*void search(String filename) throws Exception {
+    void search(String filename) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String line;
         while ((line = br.readLine()) != null) {
@@ -353,7 +349,7 @@ public class FSM { //MISSING ‘?’]	 [ ]	 .	 \
                 } while (myDeque.getSize() > 0);
             }
         }
-    }*/
+    }
 }
 
 
