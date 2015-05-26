@@ -201,7 +201,8 @@ public class FSM {
                     int index = current_index+1;
                     String brackets = "";
                     r=state;
-                    while (counter<2||regexp[index]!=']') {
+
+                    while (counter<2&&index<regexp.length&&regexp[index]!=']') {
                         if (regexp[index]==']'){
                             counter++;
                         }
